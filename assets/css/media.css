@@ -1,0 +1,476 @@
+/* ==========================================================================
+   Media system
+   Blocks: video, YouTube facade, image figure + lightbox, gallery,
+   before/after compare, placeholder, card thumbnails.
+   Copy-paste snippets for every block live in MEDIA.md.
+   Aspect ratio is set per block with style="--ar: 16/9" so space is reserved
+   before anything loads.
+   ========================================================================== */
+
+.media {
+  margin: 0;
+  width: 100%;
+}
+
+/* Frame: reserves the aspect ratio, clips content, provides the backdrop. */
+.media__frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ar, 16 / 9);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--media-bg);
+  border: 1px solid var(--border);
+}
+
+.media__frame > video,
+.media__frame > img,
+.media__frame > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: var(--fit, cover);
+}
+
+/* Charts, diagrams and screenshots should not be cropped. */
+.media--contain { --fit: contain; }
+.media--contain .media__frame { background: var(--figure-bg); }
+
+.media figcaption,
+.media__caption {
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---------- Video ---------- */
+.media--video video { background: #000; }
+
+/* ---------- YouTube facade ---------- */
+.yt {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+}
+.yt img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.yt:hover img, .yt:focus-visible img { opacity: 1; }
+.yt__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 68px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.72);
+  transition: background 0.2s;
+}
+.yt__play::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-35%, -50%);
+  border-style: solid;
+  border-width: 10px 0 10px 17px;
+  border-color: transparent transparent transparent #fff;
+}
+.yt:hover .yt__play, .yt:focus-visible .yt__play { background: #c00; }
+.yt__label {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.6rem;
+  font-size: 0.8rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* ---------- Image figure (click to enlarge) ---------- */
+.media__zoom { cursor: zoom-in; }
+.media__zoom:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.media__zoom img { transition: transform 0.3s; }
+@media (hover: hover) {
+  .media__zoom:hover img { transform: scale(1.015); }
+}
+.media--contain .media__zoom:hover img { transform: none; }
+
+/* ---------- Lightbox (native <dialog>, built by media.js) ---------- */
+.lightbox {
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(5, 6, 8, 0.94);
+  color: #f1f3f5;
+}
+.lightbox::backdrop { background: transparent; }
+.lightbox__inner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  padding: 3.5rem 1rem 1rem;
+}
+.lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #fff;
+}
+.lightbox__img.is-photo { background: transparent; }
+.lightbox__caption {
+  max-width: 70ch;
+  margin: 0.75rem auto 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #c4cad1;
+}
+.lightbox__btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox__btn:hover { background: rgba(255, 255, 255, 0.15); }
+.lightbox__btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lightbox__close { top: 0.75rem; right: 0.75rem; }
+.lightbox__prev { left: 0.75rem; top: 50%; transform: translateY(-50%); }
+.lightbox__next { right: 0.75rem; top: 50%; transform: translateY(-50%); }
+.lightbox__btn[hidden] { display: none; }
+
+/* ---------- Gallery ---------- */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 1.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gallery--2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); }
+.gallery .media figcaption { font-size: 0.8125rem; }
+
+/* ---------- Before / after ---------- */
+.compare {
+  --pos: 50%;
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ar, 16 / 9);
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--media-bg);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+.compare img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--fit, cover);
+  pointer-events: none;
+}
+/* The "before" image sits on top and is clipped to the left of the handle. */
+.compare__before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.compare__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+.compare__handle::after {
+  content: "\2194";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.compare input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+.compare:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+.compare__label {
+  position: absolute;
+  top: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.66);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+.compare__label--before { left: 0.6rem; }
+.compare__label--after { right: 0.6rem; }
+
+/* Side-by-side variant: two figures in a row, stacked on narrow screens. */
+.compare-sbs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .compare-sbs { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Placeholder ----------
+   Any .media__frame with .is-placeholder. Looks intentional on screen;
+   the HTML around it is marked with <!-- PLACEHOLDER --> comments. */
+.is-placeholder {
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 14px, var(--ph-stripe) 14px 15px),
+    var(--media-bg);
+  border-style: dashed;
+}
+.is-placeholder > .ph {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+.ph__icon {
+  width: 28px;
+  height: 28px;
+  opacity: 0.6;
+}
+.ph__title {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* ---------- Chart frame (inline SVG charts) ---------- */
+.chart {
+  padding: 1rem 1rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.chart svg { display: block; width: 100%; height: auto; }
+
+/* ---------- Motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .media__zoom img, .yt img, .yt__play { transition: none; }
+  .media__zoom:hover img { transform: none; }
+}
+
+/* ---------- Bar chart as an accessible table ----------
+   Each bar is a <span class="bar" style="--v: 91">; --v is a 0-100 value. */
+.barchart {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+.barchart th, .barchart td { padding: 0.3rem 0; text-align: left; vertical-align: middle; font-weight: 400; }
+.barchart .barchart__group th {
+  padding-top: 1rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.barchart tbody:first-of-type .barchart__group th { padding-top: 0; }
+.barchart th[scope="row"] { width: 38%; padding-right: 0.75rem; color: var(--text-muted); line-height: 1.3; }
+.barchart td.barchart__track {
+  width: 50%;
+  background: linear-gradient(90deg, var(--chart-grid) 1px, transparent 1px) 0 0 / 25% 100%;
+  border-right: 1px solid var(--chart-grid);
+}
+.barchart td.barchart__value { width: 12%; padding-left: 0.6rem; color: var(--text); white-space: nowrap; }
+.bar {
+  display: block;
+  width: calc(var(--v) * 1%);
+  min-width: 2px;
+  height: 16px;
+  border-radius: 0 4px 4px 0;
+  background: var(--accent);
+}
+.bar--base { background: var(--chart-base); }
+.barchart__axis { margin-top: 0.4rem; font-size: 0.75rem; color: var(--text-muted); text-align: right; }
+
+/* Inline SVG chart used as a card thumbnail. */
+.chart-thumb { background: var(--surface); }
+.chart-thumb svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.chart-thumb .ct-axis { stroke: var(--chart-grid); stroke-width: 2; }
+.chart-thumb .ct-base { fill: var(--chart-base); }
+.chart-thumb .ct-accent { fill: var(--accent); }
+.chart-thumb .ct-val { fill: var(--text); font: 600 30px var(--font); text-anchor: middle; }
+.chart-thumb .ct-lbl { fill: var(--text-muted); font: 500 24px var(--font); text-anchor: middle; }
+
+/* ---------- Pipeline / log trace table ---------- */
+.trace__scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.trace__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.trace__table th, .trace__table td {
+  padding: 0.45rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.trace__table tbody tr:last-child > * { border-bottom: 0; }
+.trace__table thead th { color: var(--text-muted); font-family: var(--font); font-weight: 600; font-size: 0.75rem; }
+.trace__table tbody th { color: var(--text-muted); font-weight: 400; }
+.trace__table .is-bubble { color: var(--text-muted); font-style: italic; opacity: 0.7; }
+
+/* Diagram used as a card thumbnail: never crop, white backing. */
+.frame--diagram { --fit: contain; background: var(--figure-bg); }
+
+/* Grid items must not inherit the list spacing from site.css (li + li). */
+.gallery > li + li { margin-top: 0; }
+
+/* Colour key under a figure (e.g. segmentation overlays). */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.legend li + li { margin-top: 0; }
+.legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.legend__swatch {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 3px;
+  background: var(--c);
+}
+.legend__swatch--box { background: transparent; border: 2px solid var(--c); border-radius: 2px; }
+
+/* Portrait-ish or small source images: do not stretch past their real width. */
+.media__frame--narrow { max-width: 760px; margin-inline: auto; }
+
+/* ---------- Chart extras ---------- */
+.chart__title { margin: 0 0 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.chart > figcaption { margin-bottom: 0.5rem; }
+.chart__legend { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--text-muted); }
+.chart .trace__scroll { border: 0; background: transparent; }
+.results-table td, .results-table th { text-align: right; }
+.results-table th[scope="row"], .results-table thead th:first-child { text-align: left; }
+.results-table strong { color: var(--text); }
+
+/* Entity colours: same method, same colour on every chart. */
+:root { --c-orm: #3987e5; --c-prmh: #d95926; --c-prma: #199e70; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --c-orm: #2a78d6; --c-prmh: #eb6834; --c-prma: #1baf7a; } }
+:root[data-theme="light"] { --c-orm: #2a78d6; --c-prmh: #eb6834; --c-prma: #1baf7a; }
+.bar--orm { background: var(--c-orm); }
+.bar--prmh { background: var(--c-prmh); }
+.bar--prma { background: var(--c-prma); }
+
+.chart-thumb .ct-orm { fill: var(--c-orm); }
+.chart-thumb .ct-prmh { fill: var(--c-prmh); }
+.chart-thumb .ct-prma { fill: var(--c-prma); }
+
+/* ---------- Pipeline flow diagram (HTML, wraps on small screens) ---------- */
+.flow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: flow;
+}
+.flow > li + li { margin-top: 0; }
+.flow__step {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.flow__step--own { border-left-color: var(--accent); }
+.flow__who { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+.flow__step--own .flow__who { color: var(--accent); }
+.flow__title { font-weight: 650; }
+.flow__text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
+/* Arrows between steps: down on phones, right on wide screens. */
+.flow__step + .flow__step::before {
+  content: "\2193";
+  position: absolute;
+  top: -1.55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+@media (min-width: 900px) {
+  .flow { grid-template-columns: repeat(5, 1fr); gap: 1.6rem; }
+  .flow__step + .flow__step::before { content: "\2192"; top: 50%; left: -1.3rem; transform: translateY(-50%); }
+}
+.flow-figure figcaption { margin-top: 1rem; }
+
+.stack-gap { height: 2rem; }

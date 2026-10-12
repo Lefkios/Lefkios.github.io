@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found | Lefkios Mavroudi</title>
+  <meta name="description" content="This page does not exist.">
+  <meta name="robots" content="noindex">
+  <!--
+    GitHub Pages serves this file for any missing URL, at any depth, so relative
+    paths to assets can break. Styles are inlined here and the home link is worked
+    out by the script below (works at the domain root and on a /repo-name/ subpath).
+  -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e1013'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='system-ui,sans-serif' font-size='27' font-weight='700' fill='%234fd1c5'%3ELM%3C/text%3E%3C/svg%3E">
+  <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    :root { color-scheme: dark; --bg: #0e1013; --text: #e7e9ec; --muted: #a2aab4; --accent: #4fd1c5; --ink: #0e1013; --border: #272c34; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { color-scheme: light; --bg: #fff; --text: #15181d; --muted: #59616b; --accent: #0f766e; --ink: #fff; --border: #dfe3e8; } }
+    :root[data-theme="light"] { color-scheme: light; --bg: #fff; --text: #15181d; --muted: #59616b; --accent: #0f766e; --ink: #fff; --border: #dfe3e8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 1.0625rem/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    header { border-bottom: 1px solid var(--border); }
+    .wrap { max-width: 808px; margin: 0 auto; padding: 0 16px; }
+    header .wrap { min-height: 60px; display: flex; align-items: center; }
+    header a { color: var(--text); font-weight: 650; text-decoration: none; }
+    main { padding: 6rem 0 4rem; }
+    h1 { margin: 0 0 0.75rem; font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.2; letter-spacing: -0.02em; }
+    p { color: var(--muted); margin: 0 0 1.5rem; }
+    .btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0.55rem 1rem; border-radius: 8px; background: var(--accent); color: var(--ink); font-weight: 550; text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    @media (min-width: 640px) { .wrap { padding: 0 24px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap"><a class="home-link" href="index.html">Lefkios Mavroudi</a></div>
+  </header>
+  <main>
+    <div class="wrap">
+      <h1>Page not found</h1>
+      <p>The page you asked for does not exist or has moved.</p>
+      <a class="btn home-link" href="index.html">Go to the home page</a>
+    </div>
+  </main>
+  <script>
+    (function () {
+      if (location.protocol === "file:") return;
+      // Site root. "/" because the site is served from lefkios.github.io (repo Lefkios.github.io).
+      // If you ever move it to <user>.github.io/<repo-name>/, set this to "/<repo-name>/".
+      var base = "/";
+      document.querySelectorAll(".home-link").forEach(function (a) { a.href = base; });
+    })();
+  </script>
+</body>
+</html>

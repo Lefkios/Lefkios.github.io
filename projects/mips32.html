@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MIPS32 processor simulator | Lefkios Mavroudi</title>
+  <meta name="description" content="Cycle-accurate single-cycle, multi-cycle and pipelined MIPS32 simulators in C++, with hazard detection and forwarding. Awarded 10/10.">
+  <link rel="canonical" href="https://lefkios.github.io/projects/mips32.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lefkios Mavroudi">
+  <meta property="og:title" content="MIPS32 processor simulator">
+  <meta property="og:description" content="Cycle-accurate single-cycle, multi-cycle and pipelined MIPS32 simulators in C++, with hazard detection and forwarding.">
+  <meta property="og:url" content="https://lefkios.github.io/projects/mips32.html">
+  <meta property="og:image" content="https://lefkios.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MIPS32 processor simulator">
+  <meta name="twitter:description" content="Cycle-accurate single-cycle, multi-cycle and pipelined MIPS32 simulators in C++, with hazard detection and forwarding.">
+  <meta name="twitter:image" content="https://lefkios.github.io/assets/og.png">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/media.css">
+  <script src="../assets/js/site.js" defer></script>
+  <script src="../assets/js/media.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="site-name" href="../index.html">Lefkios Mavroudi</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../index.html#projects">Projects</a>
+        <a class="hide-sm" href="../index.html#experience">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+        <button class="theme-toggle" type="button" aria-label="Switch theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="project-head prose">
+        <a class="back-link" href="../index.html#projects">&larr; All projects</a>
+        <span class="eyebrow">Computer architecture</span>
+        <h1>MIPS32 processor simulator</h1>
+        <p class="summary">I wrote three cycle-accurate MIPS32 simulators in C++: single-cycle, multi-cycle and pipelined. The project was awarded 10/10.</p>
+        <ul class="meta">
+          <li>Feb 2025 to Apr 2025</li>
+          <li>C++, computer architecture, pipelining</li>
+        </ul>
+      </div>
+
+      <!-- Main media: no demo video for this project, so the pipelined datapath diagram leads the page.
+           TODO(credit): these diagrams come from the MIPS32 repo. If they are from course slides or the
+           Patterson and Hennessy textbook, add a credit to the captions. -->
+      <figure class="media media--image media--contain" style="--ar: 1600/958">
+        <a class="media__frame media__zoom" href="../assets/img/mips32/pipelined.jpg" data-lightbox>
+          <img src="../assets/img/mips32/pipelined.jpg" width="1600" height="958" decoding="async"
+               alt="Pipelined MIPS32 datapath with IF/ID, ID/EX, EX/MEM and MEM/WB pipeline registers, a hazard detection unit and a forwarding unit.">
+        </a>
+        <figcaption>The pipelined datapath the simulator models, including the hazard detection and forwarding units.</figcaption>
+      </figure>
+
+      <div class="prose">
+        <section class="section" aria-labelledby="problem">
+          <h2 id="problem">Problem</h2>
+          <p>Single-cycle, multi-cycle and pipelined processors execute the same instructions in very different ways. Writing a simulator for each one, cycle by cycle, makes the differences concrete, especially the hazards that pipelining introduces.</p>
+        </section>
+
+        <section class="section" aria-labelledby="approach">
+          <h2 id="approach">What I did</h2>
+          <ul>
+            <li>Implemented single-cycle, multi-cycle and pipelined MIPS32 simulators in C++, each modelling its own datapath.</li>
+            <li>Added hazard detection, forwarding and control-flow handling to the pipelined version.</li>
+            <li>Each simulator runs an assembly program and logs the processor state every cycle.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="section" aria-labelledby="results">
+        <h2 id="results">Results</h2>
+        <ul class="stats">
+          <li class="stat"><span class="stat__value">3</span><span class="stat__label">cycle-accurate simulators: single-cycle, multi-cycle, pipelined</span></li>
+          <li class="stat"><span class="stat__value">10/10</span><span class="stat__label">final mark</span></li>
+        </ul>
+
+        <figure class="media trace">
+          <div class="trace__scroll" tabindex="0" role="region" aria-label="Pipeline trace, scrolls sideways">
+            <table class="trace__table">
+              <caption class="visually-hidden">Pipeline stages for cycles 29 to 35 of the pipelined simulator's output</caption>
+              <thead>
+                <tr><th scope="col">Cycle</th><th scope="col">IF</th><th scope="col">ID</th><th scope="col">EX</th><th scope="col">MEM</th><th scope="col">WB</th></tr>
+              </thead>
+              <tbody>
+              <tr><th scope="row">29</th><td>or $s7, $s7, $s7</td><td>addi $t0, $t0, 1</td><td>ori $ra, $zero, 0x0</td><td>ori $k1, $zero, 0x0</td><td>ori $k0, $zero, 0x0</td></tr>
+              <tr><th scope="row">30</th><td>bne $t0, $s7, loop_0</td><td>or $s7, $s7, $s7</td><td>addi $t0, $t0, 1</td><td>ori $ra, $zero, 0x0</td><td>ori $k1, $zero, 0x0</td></tr>
+              <tr><th scope="row">31</th><td>bne $t0, $s7, loop_0</td><td class="is-bubble">bubble</td><td>or $s7, $s7, $s7</td><td>addi $t0, $t0, 1</td><td>ori $ra, $zero, 0x0</td></tr>
+              <tr><th scope="row">32</th><td>bne $t0, $s7, loop_0</td><td class="is-bubble">bubble</td><td class="is-bubble">bubble</td><td>or $s7, $s7, $s7</td><td>addi $t0, $t0, 1</td></tr>
+              <tr><th scope="row">33</th><td>addi $t2, $t2, 1</td><td>bne $t0, $s7, loop_0</td><td class="is-bubble">bubble</td><td class="is-bubble">bubble</td><td>or $s7, $s7, $s7</td></tr>
+              <tr><th scope="row">34</th><td>addi $t0, $t0, 1</td><td class="is-bubble">bubble</td><td>bne $t0, $s7, loop_0</td><td class="is-bubble">bubble</td><td class="is-bubble">bubble</td></tr>
+              <tr><th scope="row">35</th><td>or $s7, $s7, $s7</td><td>addi $t0, $t0, 1</td><td class="is-bubble">bubble</td><td>bne $t0, $s7, loop_0</td><td class="is-bubble">bubble</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <figcaption>Cycles 29 to 35 of the pipelined simulator's output. <code>bne</code> needs <code>$s7</code> from the instruction just ahead of it, so it waits two cycles while bubbles move down the pipeline. When the branch is taken, the fall-through instruction it fetched (<code>addi $t2</code>) is flushed.</figcaption>
+        </figure>
+      </section>
+
+      <section class="section" aria-labelledby="gallery">
+        <h2 id="gallery">Media</h2>
+        <ul class="gallery gallery--2" data-gallery>
+          <li>
+            <figure class="media media--image media--contain" style="--ar: 1600/1017">
+        <a class="media__frame media__zoom" href="../assets/img/mips32/single-cycle.jpg" data-lightbox>
+          <img src="../assets/img/mips32/single-cycle.jpg" width="1600" height="1017" loading="lazy" decoding="async"
+               alt="Single-cycle MIPS32 datapath with instruction memory, register file, ALU, data memory and control unit.">
+        </a>
+        <figcaption>Single-cycle datapath: every instruction finishes in one clock cycle.</figcaption>
+      </figure>
+          </li>
+          <li>
+            <figure class="media media--image media--contain" style="--ar: 1600/1030">
+        <a class="media__frame media__zoom" href="../assets/img/mips32/multi-cycle.jpg" data-lightbox>
+          <img src="../assets/img/mips32/multi-cycle.jpg" width="1600" height="1030" loading="lazy" decoding="async"
+               alt="Multi-cycle MIPS32 datapath with a shared memory, instruction register, A, B and ALUOut registers, and control unit.">
+        </a>
+        <figcaption>Multi-cycle datapath: one memory and one ALU, reused across several shorter cycles.</figcaption>
+      </figure>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section prose" aria-labelledby="links">
+        <h2 id="links">Links</h2>
+        <ul class="link-row">
+          <li><a class="btn" href="https://github.com/Lefkios/MIPS32">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"/></svg>
+            Code on GitHub</a></li>
+        </ul>
+      </section>
+
+      <nav class="pager" aria-label="Project navigation">
+        <a href="person-hiding-patches.html"><span>Previous project</span>&larr; Person-hiding patches</a>
+        <a class="next" href="../index.html#projects"><span>Back to</span>All projects</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Lefkios Mavroudi</span>
+      <span><a href="mailto:mavroudi.lefkios03@gmail.com">mavroudi.lefkios03@gmail.com</a> &middot; <a href="https://github.com/Lefkios">GitHub</a> &middot; <a href="https://www.linkedin.com/in/lefkios-mavroudi">LinkedIn</a></span>
+    </div>
+  </footer>
+</body>
+</html>

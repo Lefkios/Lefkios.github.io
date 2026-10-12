@@ -1,0 +1,17 @@
+# Raw and uncompressed media: keep outside git. Compress into assets/ with scripts/compress-media.sh
+/raw/
+*.mov
+*.MOV
+*.mkv
+*.avi
+*.heic
+*.HEIC
+*.wav
+*.zip
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/

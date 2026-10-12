@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adversarial person-hiding patches | Lefkios Mavroudi</title>
+  <meta name="description" content="Printable patches that hide a person from YOLOv8, built for a live Researchers' Night 2025 demo with switchable defences.">
+  <link rel="canonical" href="https://lefkios.github.io/projects/person-hiding-patches.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lefkios Mavroudi">
+  <meta property="og:title" content="Adversarial person-hiding patches">
+  <meta property="og:description" content="Printable patches that hide a person from YOLOv8, built for a live Researchers' Night 2025 demo.">
+  <meta property="og:url" content="https://lefkios.github.io/projects/person-hiding-patches.html">
+  <meta property="og:image" content="https://lefkios.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Adversarial person-hiding patches">
+  <meta name="twitter:description" content="Printable patches that hide a person from YOLOv8, built for a live Researchers' Night 2025 demo.">
+  <meta name="twitter:image" content="https://lefkios.github.io/assets/og.png">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/media.css">
+  <script src="../assets/js/site.js" defer></script>
+  <script src="../assets/js/media.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="site-name" href="../index.html">Lefkios Mavroudi</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../index.html#projects">Projects</a>
+        <a class="hide-sm" href="../index.html#experience">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+        <button class="theme-toggle" type="button" aria-label="Switch theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="project-head prose">
+        <a class="back-link" href="../index.html#projects">&larr; All projects</a>
+        <span class="eyebrow">Live demo</span>
+        <h1>Adversarial person-hiding patches</h1>
+        <p class="summary">I optimised printable patches that stop YOLOv8 from detecting the person holding them, and ran them as a live demonstration at European Researchers' Night 2025 with the GuardAI EU project at KIOS.</p>
+        <ul class="meta">
+          <li>Aug 2025 to Sep 2025</li>
+          <li>Python, PyTorch, YOLOv8</li>
+        </ul>
+      </div>
+
+      <!-- Main demo video -->
+      <figure class="media media--video" style="--ar: 16/9">
+        <div class="media__frame">
+          <video controls preload="metadata" playsinline poster="../assets/posters/person-hiding-patches/live-demo.jpg">
+            <source src="../assets/video/person-hiding-patches/live-demo.mp4" type="video/mp4">
+            Your browser cannot play this video. <a href="../assets/video/person-hiding-patches/live-demo.mp4">Download the MP4</a>.
+          </video>
+        </div>
+        <figcaption>A webcam running YOLOv8 while I hold up a printed patch and then lower it.</figcaption>
+      </figure>
+      <details class="transcript prose">
+        <summary>What happens in this video</summary>
+        <ol>
+          <li>I stand in front of the camera without the patch and YOLOv8 draws a person box around me.</li>
+          <li>I hold the printed patch in front of my chest and the person box disappears.</li>
+          <li>When I lower the patch, the detection comes back. Raising it again hides me again.</li>
+          <li>At the end I hold up a blank sheet of paper instead, and YOLOv8 still detects me.</li>
+        </ol>
+      </details>
+
+      <div class="prose">
+        <section class="section" aria-labelledby="problem">
+          <h2 id="problem">Problem</h2>
+          <p>Person detectors are used in safety systems, so a printed pattern that makes someone invisible to one is a real risk. For Researchers' Night 2025 I wanted visitors to see this happen live on a webcam, and to see how simple input defences change the result.</p>
+        </section>
+
+        <section class="section" aria-labelledby="approach">
+          <h2 id="approach">What I did</h2>
+          <ul>
+            <li>Optimised printable patches against YOLOv8's person class using top-K suppression, with TV and L2 regularisation to keep the patch smooth enough to print.</li>
+            <li>Tested the patches against JPEG compression, blur and Local Gradient Smoothing (LGS).</li>
+            <li>Built the live demo, where each defence can be switched on while the camera runs.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="section" aria-labelledby="results">
+        <h2 id="results">Results</h2>
+        <!-- Before/after slider -->
+        <figure class="media media--compare">
+          <div class="compare" style="--ar: 16/9">
+            <img src="../assets/img/person-hiding-patches/with-patch.jpg" width="1280" height="720" loading="lazy" decoding="async"
+                 alt="Webcam frame of me holding the printed patch, with no person box drawn.">
+            <img class="compare__before" src="../assets/img/person-hiding-patches/no-patch.jpg" width="1280" height="720" loading="lazy" decoding="async"
+                 alt="Webcam frame of me without the patch, with a red person box drawn around me.">
+            <span class="compare__handle" aria-hidden="true"></span>
+            <span class="compare__label compare__label--before" aria-hidden="true">No patch</span>
+            <span class="compare__label compare__label--after" aria-hidden="true">Patch</span>
+            <input type="range" min="0" max="100" value="50" aria-label="Slide to compare detection without and with the patch">
+          </div>
+          <figcaption>Drag to compare: YOLOv8 detects me without the patch and misses me while I hold it.</figcaption>
+        </figure>
+        <p class="prose">The demo video I posted on LinkedIn had 183,216 impressions (October 2026). A team at HackTX 2025 credited it as the idea behind 404 Apparel, clothing with adversarial patterns, which won the event's Best Human Intelligence award.</p>
+      </section>
+
+      <section class="section" aria-labelledby="gallery">
+        <h2 id="gallery">Media</h2>
+        <ul class="gallery gallery--2" data-gallery>
+          <li>
+            <figure class="media media--compare">
+              <div class="compare" style="--ar: 1600/890">
+                <img src="../assets/img/person-hiding-patches/two-people-patch.jpg" width="1600" height="890" loading="lazy" decoding="async"
+                     alt="Two people in front of the camera. The one holding the printed patch has no box; the other is detected as a person.">
+                <img class="compare__before" src="../assets/img/person-hiding-patches/two-people-no-patch.jpg" width="1600" height="890" loading="lazy" decoding="async"
+                     alt="Two people in front of the camera, both with red person boxes.">
+                <span class="compare__handle" aria-hidden="true"></span>
+                <span class="compare__label compare__label--before" aria-hidden="true">No patch</span>
+                <span class="compare__label compare__label--after" aria-hidden="true">Patch</span>
+                <input type="range" min="0" max="100" value="50" aria-label="Slide to compare two people without and with the patch">
+              </div>
+              <figcaption>Drag to compare: only the person holding the patch disappears; the other is still detected.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="media media--video" style="--ar: 16/9">
+              <div class="media__frame">
+                <video data-autoplay muted loop playsinline preload="none" poster="../assets/posters/person-hiding-patches/defences-loop.jpg">
+                  <source src="../assets/video/person-hiding-patches/defences-loop.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption>Switching on Gaussian blur, JPEG compression and LGS in turn: each one brings the person detection back.</figcaption>
+            </figure>
+          </li>
+          <!-- To add photos from the Researchers' Night 2025 stand later, put them in assets/img/person-hiding-patches/
+               and paste the image figure snippet from MEDIA.md here, inside an <li>. Ask visitors' consent before using their faces. -->
+        </ul>
+      </section>
+
+      <section class="section prose" aria-labelledby="links">
+        <h2 id="links">Links</h2>
+        <ul class="link-row">
+          <li><a class="btn" href="https://github.com/Lefkios/person-suppression-patch">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"/></svg>
+            Code on GitHub</a></li>
+        </ul>
+      </section>
+
+      <nav class="pager" aria-label="Project navigation">
+        <a href="llm-process-rewards.html"><span>Previous project</span>&larr; LLM post-training</a>
+        <a class="next" href="mips32.html"><span>Next project</span>MIPS32 simulator &rarr;</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Lefkios Mavroudi</span>
+      <span><a href="mailto:mavroudi.lefkios03@gmail.com">mavroudi.lefkios03@gmail.com</a> &middot; <a href="https://github.com/Lefkios">GitHub</a> &middot; <a href="https://www.linkedin.com/in/lefkios-mavroudi">LinkedIn</a></span>
+    </div>
+  </footer>
+</body>
+</html>

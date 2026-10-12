@@ -1,0 +1,164 @@
+<!doctype html>
+<!--
+  NOTE: no patient images on this page. Do not add frames from any echocardiography
+  dataset: the EchoNet-Dynamic licence forbids publishing any portion of it, and
+  local clinical scans need written approval from the data owner.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedSAM2 right-ventricle segmentation | Lefkios Mavroudi</title>
+  <meta name="description" content="Right-ventricle segmentation at CYENS: transfer learning, then a fine-tuned MedSAM2 prompted by the transferred model. Mean Dice 0.8463 to 0.8918.">
+  <link rel="canonical" href="https://lefkios.github.io/projects/medsam2-rv.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lefkios Mavroudi">
+  <meta property="og:title" content="MedSAM2 right-ventricle segmentation">
+  <meta property="og:description" content="Right-ventricle segmentation at CYENS: transfer learning, then a fine-tuned MedSAM2 prompted by the transferred model. Mean Dice 0.8463 to 0.8918.">
+  <meta property="og:url" content="https://lefkios.github.io/projects/medsam2-rv.html">
+  <meta property="og:image" content="https://lefkios.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MedSAM2 right-ventricle segmentation">
+  <meta name="twitter:description" content="Right-ventricle segmentation at CYENS: transfer learning, then a fine-tuned MedSAM2 prompted by the transferred model. Mean Dice 0.8463 to 0.8918.">
+  <meta name="twitter:image" content="https://lefkios.github.io/assets/og.png">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/media.css">
+  <script src="../assets/js/site.js" defer></script>
+  <script src="../assets/js/media.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="site-name" href="../index.html">Lefkios Mavroudi</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../index.html#projects">Projects</a>
+        <a class="hide-sm" href="../index.html#experience">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+        <button class="theme-toggle" type="button" aria-label="Switch theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="project-head prose">
+        <a class="back-link" href="../index.html#projects">&larr; All projects</a>
+        <span class="eyebrow">CYENS internship</span>
+        <h1>MedSAM2 right-ventricle segmentation in echocardiography</h1>
+        <p class="summary">At CYENS I worked on segmenting the right ventricle in echocardiography. With my supervisor, I first transferred a left-ventricle model to the right ventricle. I then extended the work on my own, using that model to prompt a fine-tuned MedSAM2, which raised mean Dice from 0.8463 to 0.8918.</p>
+        <ul class="meta">
+          <li>CYENS Centre of Excellence, AI Research Engineer Intern</li>
+          <li>Jun 2026 to Jul 2026</li>
+          <li>PyTorch, MedSAM2, SLURM</li>
+        </ul>
+      </div>
+
+      <figure class="media media--image" style="--ar: 640/400">
+        <a class="media__frame media__zoom media__frame--narrow" href="../assets/img/medsam2-rv/illustration.svg" data-lightbox data-photo>
+          <img src="../assets/img/medsam2-rv/illustration.svg" width="640" height="400" decoding="async"
+               alt="Schematic echocardiography view: a red box around the right ventricle with overlapping green, yellow and blue masks inside it.">
+        </a>
+        <figcaption>
+          Schematic of what the pipeline produces on each frame (illustration, not patient data).
+          <ul class="legend" aria-label="Colour key">
+            <li><span class="legend__swatch legend__swatch--box" style="--c: #e0242b"></span>Red box: bounding-box prompt</li>
+            <li><span class="legend__swatch" style="--c: #1f9d3a"></span>Green: ground-truth RV mask</li>
+            <li><span class="legend__swatch" style="--c: #e3d22a"></span>Yellow: transfer-model prediction</li>
+            <li><span class="legend__swatch" style="--c: #4d8fe0"></span>Blue: MedSAM2 output mask</li>
+          </ul>
+        </figcaption>
+      </figure>
+
+      <div class="stack-gap"></div>
+      <figure class="media flow-figure">
+        <ol class="flow">
+          <li class="flow__step flow__step--shared">
+            <span class="flow__who">Starting point</span>
+            <span class="flow__title">Left-ventricle model</span>
+            <span class="flow__text">Existing segmentation model trained for the left ventricle</span>
+          </li>
+          <li class="flow__step flow__step--shared">
+            <span class="flow__who">With my supervisor</span>
+            <span class="flow__title">Transfer learning</span>
+            <span class="flow__text">Adapted to the right ventricle; this is the baseline</span>
+          </li>
+          <li class="flow__step flow__step--own">
+            <span class="flow__who">My extension</span>
+            <span class="flow__title">Box prompts</span>
+            <span class="flow__text">Transfer-model predictions turned into bounding boxes</span>
+          </li>
+          <li class="flow__step flow__step--own">
+            <span class="flow__who">My extension</span>
+            <span class="flow__title">Fine-tuned MedSAM2</span>
+            <span class="flow__text">Two-stage decoder fine-tuning, image encoder frozen</span>
+          </li>
+          <li class="flow__step flow__step--own">
+            <span class="flow__who">My extension</span>
+            <span class="flow__title">Right-ventricle mask</span>
+            <span class="flow__text">Evaluated at end-diastole and end-systole</span>
+          </li>
+        </ol>
+        <figcaption>The pipeline: the transferred model finds the right ventricle, and its prediction becomes the prompt that tells MedSAM2 where to segment.</figcaption>
+      </figure>
+
+      <div class="prose">
+        <section class="section" aria-labelledby="problem">
+          <h2 id="problem">Problem</h2>
+          <p>Related work on automated segmentation in echocardiography is done for the left ventricle. We needed the right ventricle. MedSAM2 is a promptable model: it needs a prompt, such as a bounding box, to know where to look.</p>
+        </section>
+
+        <section class="section" aria-labelledby="approach">
+          <h2 id="approach">What I did</h2>
+          <ul>
+            <li><strong>Transfer learning, with my supervisor:</strong> adapted a left-ventricle segmentation model to the right ventricle. This became the baseline.</li>
+            <li><strong>Transferred model as prompt creator, on my own:</strong> built a PyTorch pipeline that turns its predictions into bounding-box prompts for MedSAM2.</li>
+            <li><strong>Zero-shot prompt study:</strong> compared tight and padded bounding boxes, 8, 16 and 32 contour points, and box-plus-point prompts.</li>
+            <li><strong>Decoder fine-tuning:</strong> ran 12 fine-tuning variants and selected a two-stage schedule: 15 epochs training only the decoder's output branch, then the full mask decoder, with the image encoder frozen.</li>
+            <li><strong>Strict evaluation:</strong> 130 training, 33 validation and 41 locked cases. I chose the model on validation only and ran the locked set once.</li>
+            <li><strong>Caught an invalid result:</strong> an earlier mask-prompt setup returned the input mask unchanged instead of running MedSAM2, so its scores looked good but meant nothing. I archived those experiments and kept them out of every comparison.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="section" aria-labelledby="results">
+        <h2 id="results">Results</h2>
+        <ul class="stats">
+          <li class="stat"><span class="stat__value">0.8463 &rarr; 0.8918</span><span class="stat__label">mean Dice on the 41 locked cases, transfer model vs fine-tuned MedSAM2 (+4.55 points)</span></li>
+          <li class="stat"><span class="stat__value">74/82</span><span class="stat__label">annotated frames improved</span></li>
+          <li class="stat"><span class="stat__value">0.90054</span><span class="stat__label">mean Dice on a later, separate test set of 31 unseen cases (62 frames)</span></li>
+        </ul>
+
+      </section>
+
+
+      <section class="section prose" aria-labelledby="links">
+        <h2 id="links">Links</h2>
+        <!-- TODO(code): no public repository found on github.com/Lefkios for this project.
+             Add a link here if CYENS allows the code to be published, or remove the button. -->
+        <ul class="link-row">
+          <li><span class="btn btn--disabled">Code not public yet</span></li>
+        </ul>
+      </section>
+
+      <nav class="pager" aria-label="Project navigation">
+        <a href="raptor.html"><span>Previous project</span>&larr; RAPTOR paper</a>
+        <a class="next" href="llm-process-rewards.html"><span>Next project</span>LLM post-training &rarr;</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Lefkios Mavroudi</span>
+      <span><a href="mailto:mavroudi.lefkios03@gmail.com">mavroudi.lefkios03@gmail.com</a> &middot; <a href="https://github.com/Lefkios">GitHub</a> &middot; <a href="https://www.linkedin.com/in/lefkios-mavroudi">LinkedIn</a></span>
+    </div>
+  </footer>
+</body>
+</html>
