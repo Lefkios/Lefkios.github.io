@@ -15,3 +15,6 @@ Thumbs.db
 .vscode/
 .idea/
 .claude/
+
+# Files saved by the Claude app
+Claude outputs/
