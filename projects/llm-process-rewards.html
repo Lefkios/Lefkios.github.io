@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LLM post-training: process vs outcome rewards | Lefkios Mavroudi</title>
+  <title>LLM post-training: human vs LLM step labels for reward modelling | Lefkios Mavroudi</title>
   <meta name="description" content="Can GPT-4o mini replace human step labels for process rewards? A GRPO study on Qwen2.5-7B, inspired by OpenAI's Let's Verify Step by Step.">
   <link rel="canonical" href="https://lefkios.github.io/projects/llm-process-rewards.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Lefkios Mavroudi">
-  <meta property="og:title" content="LLM post-training: process vs outcome rewards">
+  <meta property="og:title" content="LLM post-training: human vs LLM step labels for reward modelling">
   <meta property="og:description" content="Can GPT-4o mini replace human step labels for process rewards? A GRPO study on Qwen2.5-7B, inspired by OpenAI's Let's Verify Step by Step.">
   <meta property="og:url" content="https://lefkios.github.io/projects/llm-process-rewards.html">
   <meta property="og:image" content="https://lefkios.github.io/assets/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LLM post-training: process vs outcome rewards">
+  <meta name="twitter:title" content="LLM post-training: human vs LLM step labels for reward modelling">
   <meta name="twitter:description" content="Can GPT-4o mini replace human step labels for process rewards? A GRPO study on Qwen2.5-7B, inspired by OpenAI's Let's Verify Step by Step.">
   <meta name="twitter:image" content="https://lefkios.github.io/assets/og.png">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -46,12 +46,12 @@
       <div class="project-head prose">
         <a class="back-link" href="../index.html#projects">&larr; All projects</a>
         <span class="eyebrow">Personal project</span>
-        <h1>LLM post-training: process vs outcome rewards</h1>
-        <p class="summary">After reading OpenAI's <em>Let's Verify Step by Step</em>, I wanted to know whether its expensive human step labels could be replaced by an LLM judge. I recreated the setup on Qwen2.5-7B with GRPO. The cheap labels did not work, and finding out why was the most useful part.</p>
+        <h1>LLM post-training: human vs LLM step labels for reward modelling</h1>
+        <p class="summary">After reading OpenAI's <em>Let's Verify Step by Step</em>, I wanted to know whether its expensive human step labels could be replaced by an LLM judge. I recreated the setup on Qwen2.5-7B-Instruct with GRPO. On GSM8K, step rewards from human labels were the only ones to clearly beat the baseline. GPT-4o mini labels did not, but the runs were not matched closely enough yet to say why.</p>
         <ul class="meta">
           <li>Aug 2026</li>
           <li>PyTorch, Transformers, TRL/GRPO, PEFT/LoRA, OpenAI API, Weights &amp; Biases</li>
-          <li>Trained on a MacBook Pro (Apple MPS)</li>
+          <li>Trained on a MacBook Pro M5 Pro (Apple MPS), about 80 GPU-hours</li>
         </ul>
       </div>
 
@@ -69,7 +69,7 @@
           </tbody>
         </table>
         <p class="barchart__axis" aria-hidden="true">Accuracy, gridlines every 25%</p>
-        <figcaption>Only human step-level supervision clearly beats the baseline. GPT-4o mini step labels end up slightly below it.</figcaption>
+        <figcaption>Only human step-level supervision clearly beats the baseline (paired McNemar p = 0.039). GPT-4o mini step labels end up slightly below it. Pass@8 stays around 96% for every model, so the gain is in how often the samples agree on the right answer, not in which problems the model can solve.</figcaption>
       </figure>
 
       <div class="prose">
@@ -81,9 +81,10 @@
         <section class="section" aria-labelledby="approach">
           <h2 id="approach">What I did</h2>
           <ul>
-            <li>Built GRPO training pipelines in TRL with LoRA for three reward signals: <strong>ORM</strong> (is the final answer correct), <strong>PRM-human</strong> (step scores from a classifier trained on PRM800K human labels) and <strong>PRM-auto</strong> (GPT-4o mini scoring each step).</li>
-            <li>Fine-tuned Qwen2.5-7B with each reward on GSM8K and on MATH, with the same base model and hyperparameters, on Apple MPS.</li>
-            <li>Evaluated majority vote over 8 samples on 200 GSM8K problems and greedy accuracy on 200 MATH-500 problems, broken down by difficulty level. Tracked every run in Weights &amp; Biases.</li>
+            <li>Filtered the training problems by sampling each one 4 times and keeping only those the base model sometimes solves and sometimes fails, since all-correct groups give GRPO no gradient. This left 255 GSM8K and 206 MATH problems.</li>
+            <li>Built GRPO training pipelines in TRL with LoRA (0.13% of parameters trainable) for three reward signals: <strong>ORM</strong> (is the final answer correct), <strong>PRM-human</strong> (step scores from a Qwen2.5-0.5B classifier I trained on PRM800K human labels) and <strong>PRM-auto</strong> (GPT-4o mini scoring each step, with 8 calls in parallel per group). Both PRM rewards also add a &plusmn;0.5 outcome bonus.</li>
+            <li>Fine-tuned Qwen2.5-7B-Instruct with each reward on GSM8K and on MATH, on Apple MPS. Each run took 15 to 16 hours, and the GPT-4o mini labels cost about $3 in total. Tracked every run in Weights &amp; Biases.</li>
+            <li>Evaluated majority vote over 8 samples on 200 GSM8K problems and greedy accuracy on 200 MATH-500 problems, broken down by difficulty level. Since every model sees the same problems, I tested differences with a paired bootstrap and exact McNemar tests.</li>
           </ul>
         </section>
       </div>
@@ -91,9 +92,9 @@
       <section class="section" aria-labelledby="results">
         <h2 id="results">Results</h2>
         <ul class="stats">
-          <li class="stat"><span class="stat__value">94.5% vs 91%</span><span class="stat__label">GSM8K, PRM-human vs baseline (majority vote over 8, 200 problems)</span></li>
-          <li class="stat"><span class="stat__value">54.5% vs 49%</span><span class="stat__label">MATH-500 subset (200 problems), ORM trained on MATH vs baseline</span></li>
-          <li class="stat"><span class="stat__value">8% &rarr; 20%</span><span class="stat__label">MATH-500 Level 5, PRM-human trained on MATH vs baseline</span></li>
+          <li class="stat"><span class="stat__value">94.5% vs 91%</span><span class="stat__label">GSM8K, PRM-human vs baseline (majority vote over 8, 200 problems, p = 0.039)</span></li>
+          <li class="stat"><span class="stat__value">54.5% vs 49%</span><span class="stat__label">MATH-500 subset (200 problems), ORM trained on MATH vs baseline (p = 0.043)</span></li>
+          <li class="stat"><span class="stat__value">8% &rarr; 20%</span><span class="stat__label">MATH-500 Level 5 (4 to 10 of 50 problems), PRM-human trained on MATH vs baseline</span></li>
         </ul>
 
         <div class="stack">
@@ -102,7 +103,7 @@
             <div class="trace__scroll" tabindex="0" role="region" aria-label="MATH-500 results table, scrolls sideways">
               <table class="trace__table results-table">
                 <caption class="visually-hidden">MATH-500 accuracy overall and per difficulty level, models trained on MATH</caption>
-                <thead><tr><th scope="col">Model</th><th scope="col">Overall</th><th scope="col">L1</th><th scope="col">L2</th><th scope="col">L3</th><th scope="col">L4</th><th scope="col">L5</th></tr></thead>
+                <thead><tr><th scope="col">Model</th><th scope="col">Overall</th><th scope="col">L1 (n=21)</th><th scope="col">L2 (n=44)</th><th scope="col">L3 (n=41)</th><th scope="col">L4 (n=44)</th><th scope="col">L5 (n=50)</th></tr></thead>
                 <tbody>
                 <tr><th scope="row">Baseline</th><td>49.0%</td><td><strong>95%</strong></td><td>73%</td><td>66%</td><td>34%</td><td>8%</td></tr>
                 <tr><th scope="row">ORM-MATH</th><td><strong>54.5%</strong></td><td>90%</td><td><strong>80%</strong></td><td>66%</td><td><strong>48%</strong></td><td>14%</td></tr>
@@ -111,11 +112,32 @@
                 </tbody>
               </table>
             </div>
-            <figcaption>All three rewards add about 5 points overall. ORM gains most on Level 4; PRM-human gains most on the hardest Level 5 problems. Best value per column in bold.</figcaption>
+            <figcaption>All three rewards add 4 to 5.5 points overall. ORM gains most on Level 4 and PRM-human on the hardest Level 5 problems, but with 21 to 50 problems per level that is a hint rather than a result. Best value per column in bold.</figcaption>
+          </figure>
+
+          <figure class="media media--image media--contain" style="--ar: 2000/680; margin-top: 1.75rem">
+            <a class="media__frame media__zoom" href="../assets/img/llm-process-rewards/paired-differences.png" data-lightbox>
+              <img src="../assets/img/llm-process-rewards/paired-differences.png" width="2000" height="680" loading="lazy" decoding="async"
+                   alt="Paired accuracy differences with 95% intervals. GSM8K: ORM minus baseline +1.0 (p = 0.73), PRM-human minus baseline +3.5 (p = 0.039), PRM-auto minus baseline -0.5 (p = 1.00), PRM-human minus PRM-auto +4.0 (p = 0.008). MATH-500: ORM +5.5 (p = 0.043), PRM-human +5.0 (p = 0.031), PRM-auto +4.0 (p = 0.077), PRM-human minus PRM-auto +1.0 (p = 0.75).">
+            </a>
+            <figcaption>Paired differences on the same 200 problems, with 95% bootstrap intervals. Blue marks p &lt; 0.05 on an exact McNemar test.</figcaption>
           </figure>
 
         </div>
-        <p class="prose">The Weights &amp; Biases logs show why the GPT-4o mini labels failed: that reward barely moved the model away from the base model. The KL divergence stayed around 0.002 for most of training, against about 0.065 with human labels. My takeaway is that, at this scale, label quality is the bottleneck for process rewards, not the reward design.</p>
+        <p class="prose" style="margin-top: 1.5rem">On GSM8K, PRM-human beat both the baseline (p = 0.039) and PRM-auto (p = 0.008), and its edge over ORM was borderline (p = 0.06). On MATH, all three GRPO rewards beat the baseline, but they can't be told apart at this sample size. With 8 comparisons and no multiple-testing correction, p-values near 0.05 are suggestive only.</p>
+        <div class="note prose">
+          <p>The PRM-human vs PRM-auto gap is not a controlled comparison yet. The PRM-auto runs used a stronger KL penalty (0.05 vs 0.01) and a different training length from the GSM8K ORM and PRM-human runs, so the gap can't be put down to label quality alone. A matched rerun is planned.</p>
+        </div>
+      </section>
+
+      <section class="section prose" aria-labelledby="limitations">
+        <h2 id="limitations">Limitations</h2>
+        <ul>
+          <li>One training seed per condition, so run-to-run variance from GRPO is not measured.</li>
+          <li>200 problems per benchmark. Differences under about 3 points should not be read as real.</li>
+          <li>One base model and one LLM judge. A stronger judge than GPT-4o mini might close the gap.</li>
+          <li>The PRM800K classifier was trained on MATH-style solutions, and its accuracy on the policy's own GSM8K steps was not measured.</li>
+        </ul>
       </section>
 
       <section class="section prose" aria-labelledby="links">
